@@ -70,8 +70,9 @@ const imagesMarkup = createImagesCard(images);
 listImages.insertAdjacentHTML("beforeend", imagesMarkup);
 
 function createImagesCard(images) {
-  return images.map(({ preview, original, description }) => {
-    return`
+  return images
+    .map(({ preview, original, description }) => {
+      return `
     <li class="gallery-item">
             <a class="gallery-link" href="${preview}">
                 <img
@@ -82,16 +83,28 @@ function createImagesCard(images) {
                 />
             </a>
         </li>`;
-  }).join("");
+    })
+    .join("");
 }
 
+listImages.addEventListener("click", onOpenModal);
 
+function onOpenModal(event) {
+  event.preventDefault();
 
-listImages.addEventListener("click", clickOnImages);
+  const imageTargetEl = event.target;
+  const originalImg = imageTargetEl.getAttribute("data-source");
 
-function clickOnImages(event) {
-    console.log(event.target.dataset.source);
-    
+  const galleryImageEl = imageTargetEl.classList.contains("gallery-image");
+  if (!galleryImageEl) {
+    return;
+  }
+
+  const instance = basicLightbox.create(`
+    <div class="modal">
+        <img src=${originalImg}  alt=${imageTargetEl.alt} >
+    </div>
+  `);
+
+  instance.show();
 }
-
-
